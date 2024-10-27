@@ -5,6 +5,7 @@ import { createPost, likePost, addComment, deletePost, deleteComment } from '../
 import { getNotifications } from '../controllers/notificationController.js';
 import userAuth from '../middlewares/userAuth.js';
 import upload from '../middlewares/multerMiddleWare.js';
+import { updateProfilePicture } from '../controllers/userController.js';
 
 const router = express.Router();
 
@@ -14,7 +15,8 @@ router.post('/login', loginUser);       // User login
 
 // User routes
 router.get('/user/:id', userAuth, getUserProfile);        // Get user profile
-router.get('/user/:id/likedPosts', userAuth, getLikedPosts); // Get liked posts by user
+router.get('/user/:id/likedPosts', userAuth, getLikedPosts);// Get liked posts by user
+router.put('/user/profilePicture', userAuth, upload.single('file'), updateProfilePicture); 
 
 // Post routes
 router.post('/post', userAuth, upload.single('file'), createPost); // Create a post with media

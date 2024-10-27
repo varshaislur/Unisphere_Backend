@@ -6,28 +6,29 @@ import { uploadToCloudinary } from '../middlewares/cloudinaryMiddleware.js';
 // Create a new post (Only committee members can post)
 export const createPost = async (req, res) => {
     if (!req.user.isCommittee) {
-        return res.status(403).json({ success: false, message: 'Only committee members can post' });
+      return res.status(403).json({ success: false, message: "Only committee members can post" });
     }
-
+  
     try {
-        // Handle image or video upload if provided
-        let mediaUrl = '';
-        if (req.file) {
-            mediaUrl = await uploadToCloudinary(req.file.path);
-        }
+      let mediaUrl = "";
+      if (req.file) {
+        mediaUrl = await uploadToCloudinary(req.file.path);
+      }
 
-        // Create post with the media URL and other data
-        const post = await Post.create({
-            ...req.body,
-            imageUrl: mediaUrl,
-            createdBy: req.user.userId
-        });
-
-        res.status(201).json({ success: true, post });
+      console.log("req.body in createPost controller:",req.body)
+  
+      const post = await Post.create({
+        ...req.body,
+        imageUrl: mediaUrl,
+        createdBy: req.user.userId
+      });
+  
+      res.status(201).json({ success: true, post });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to create post', error });
+      res.status(500).json({ success: false, message: "Failed to create post", error });
     }
-};
+  };
+  
 
 // Like or unlike a post
 export const likePost = async (req, res) => {
