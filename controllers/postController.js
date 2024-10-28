@@ -139,12 +139,14 @@ export const deletePost = async (req, res) => {
             return res.status(403).json({ success: false, message: 'You can only delete your own posts' });
         }
 
-        await post.remove();
+        await post.deleteOne();
         res.status(200).json({ success: true, message: 'Post deleted successfully' });
     } catch (error) {
+        console.log("error:", error);
         res.status(500).json({ success: false, message: 'Failed to delete post', error });
     }
 };
+
 
 // Delete a comment (Only the comment author or post creator can delete the comment)
 export const deleteComment = async (req, res) => {
@@ -159,7 +161,7 @@ export const deleteComment = async (req, res) => {
             return res.status(403).json({ success: false, message: 'You can only delete your own comments or comments on your posts' });
         }
 
-        comment.remove();
+        comment.deleteOne(); // Updated from comment.remove()
         await post.save();
 
         res.status(200).json({ success: true, message: 'Comment deleted successfully' });

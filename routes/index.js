@@ -2,7 +2,7 @@ import express from 'express';
 import { registerUser, loginUser } from '../controllers/authController.js';
 import { getUserProfile, getLikedPosts, getOwnProfile, toggleFollowUser } from '../controllers/userController.js';
 import { createPost, likePost, addComment, deletePost, deleteComment, getHomepagePosts } from '../controllers/postController.js';
-import { getNotifications } from '../controllers/notificationController.js';
+import { getNotifications, getReadNotifications, getUnreadNotifications, markNotificationAsRead } from '../controllers/notificationController.js';
 import userAuth from '../middlewares/userAuth.js';
 import upload from '../middlewares/multerMiddleWare.js';
 import { updateProfilePicture } from '../controllers/userController.js';
@@ -33,6 +33,9 @@ router.get('/homepage', userAuth, getHomepagePosts); // Fetch posts for user's h
 
 
 // Notification routes
-router.get('/notifications', userAuth, getNotifications); // Get user notifications
+router.get('/notifications', userAuth, getNotifications); // Get all user notifications
+router.get('/notifications/read', userAuth, getReadNotifications); // Get only read notifications
+router.get('/notifications/unread', userAuth, getUnreadNotifications); // Get only unread notifications
+router.put('/notifications/:id/read', userAuth, markNotificationAsRead); // Mark a specific notification as read
 
 export default router;
