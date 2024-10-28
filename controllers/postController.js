@@ -28,6 +28,31 @@ export const createPost = async (req, res) => {
       res.status(500).json({ success: false, message: "Failed to create post", error });
     }
   };
+
+export const getHomepagePosts = async (req, res) => {
+    try {
+        // Find the user and populate the 'following' field
+        const user = await User.findById(req.user.userId).populate({
+            path: 'following',
+            match: { isCommittee: true }, // Filter only committee members
+            select: '_id' // Only fetch the _id field
+        });
+
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+        // Get an array of committee IDs the user follows
+        const committeeIds = user.following.map(followed => followed._id);
+
+        // Find posts created by these committees
+        const posts = await Post.find({ createdBy: { $in: committeeIds } })
+            .populate('createdBy', 'username profilePicture') // Populate the creator's username and profile picture
+            .sort({ createdAt: -1 }); // Sort posts by creation date (newest first)
+
+        res.status(200).json({ success: true, posts });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch homepage posts', error });
+    }
+};
   
 
 // Like or unlike a post
@@ -71,6 +96,11 @@ export const likePost = async (req, res) => {
 // Add a comment to a post
 export const addComment = async (req, res) => {
     try {
+        // Validate text input
+        if (!req.body.text || req.body.text.trim() === '') {
+            return res.status(400).json({ success: false, message: 'Comment text is required' });
+        }
+
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
@@ -97,6 +127,7 @@ export const addComment = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to add comment', error });
     }
 };
+
 
 // Delete a post (Only the creator can delete their post)
 export const deletePost = async (req, res) => {
