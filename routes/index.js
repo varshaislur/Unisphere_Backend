@@ -19,7 +19,7 @@ router.get('/user/:id', userAuth, getUserProfile);        // Get user profile
 router.get('/user/:id/likedPosts', userAuth, getLikedPosts);// Get liked posts by user
 router.put('/user/profilePicture', userAuth, upload.single('file'), updateProfilePicture); 
 router.put('/user/:id/toggleFollow', userAuth, toggleFollowUser); // Toggle follow/unfollow a user
-router.get('/users/allCommitteeProfiles', getAllCommitteeProfiles); // Route to get only committee members
+router.get('/users/allCommitteeProfiles', userAuth, getAllCommitteeProfiles); // Route to get only committee members
 
 
 // Post routes
