@@ -2,6 +2,14 @@ import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { uploadToCloudinary } from '../middlewares/cloudinaryMiddleware.js';
 
+export const getAllCommitteeProfiles = async (req, res) => {
+    try {
+        const committeeMembers = await User.find({ isCommittee: true }).select('username profilePicture followers following');
+        res.status(200).json({ success: true, users: committeeMembers });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch committee members', error });
+    }
+};
 
 export const getOwnProfile = async (req, res) => {
     try {

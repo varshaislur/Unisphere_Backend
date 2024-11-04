@@ -1,6 +1,6 @@
 import express from 'express';
 import { registerUser, loginUser } from '../controllers/authController.js';
-import { getUserProfile, getLikedPosts, getOwnProfile, toggleFollowUser } from '../controllers/userController.js';
+import { getUserProfile, getLikedPosts, getOwnProfile, toggleFollowUser, getAllCommitteeProfiles } from '../controllers/userController.js';
 import { createPost, likePost, addComment, deletePost, deleteComment, getHomepagePosts } from '../controllers/postController.js';
 import { getNotifications, getReadNotifications, getUnreadNotifications, markNotificationAsRead } from '../controllers/notificationController.js';
 import userAuth from '../middlewares/userAuth.js';
@@ -19,6 +19,7 @@ router.get('/user/:id', userAuth, getUserProfile);        // Get user profile
 router.get('/user/:id/likedPosts', userAuth, getLikedPosts);// Get liked posts by user
 router.put('/user/profilePicture', userAuth, upload.single('file'), updateProfilePicture); 
 router.put('/user/:id/toggleFollow', userAuth, toggleFollowUser); // Toggle follow/unfollow a user
+router.get('/users/allComitteeProfiles', userAuth, getAllCommitteeProfiles); // Route to get only committee members
 
 
 // Post routes
